@@ -1,3 +1,5 @@
+-- nerdfonts icons code cheat-sheet
+-- https://www.nerdfonts.com/cheat-sheet
 return {
   "nvim-mini/mini.icons",
   opts = {

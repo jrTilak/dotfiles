@@ -96,6 +96,7 @@ toPath "$HOME/.local/bin"
 toPath "$HOME/.cargo/bin"
 toPath "$HOME/Applications/weylus"
 
+toPath "/usr/local/go/bin"
 
 # bun completions
 [ -s "/home/jrtilak/.bun/_bun" ] && source "/home/jrtilak/.bun/_bun"

@@ -1,3 +1,22 @@
+# Welcome ASCII Art for Kitty
+if [ "$TERM" = "xterm-kitty" ]; then
+  echo ""
+  echo " ██╗  ██╗██╗████████╗████████╗██╗   ██╗"
+  echo " ██║ ██╔╝██║╚══██╔══╝╚══██╔══╝╚██╗ ██╔╝"
+  echo " █████╔╝ ██║   ██║      ██║    ╚████╔╝ "
+  echo " ██╔═██╗ ██║   ██║      ██║     ╚██╔╝  "
+  echo " ██║  ██╗██║   ██║      ██║      ██║   "
+  echo " ╚═╝  ╚═╝╚═╝   ╚═╝      ╚═╝      ╚═╝  "
+  echo ""
+  echo "  Welcome back, $(whoami)! 🐱"
+  echo "  $(date '+%A, %B %d %Y | %H:%M')"
+  echo ""
+fi
+
+
+
+
+
 # Utilities
 # =========================
 # Add directory to PATH
@@ -112,6 +131,14 @@ alias python="python3"
 alias t="tmux"
 alias n="nvim"
 
+alias bat='batcat'
+
 alias dot='git --git-dir=$HOME/dotfiles.git --work-tree=$HOME'
 
-
+# pnpm
+export PNPM_HOME="/home/jrtilak/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

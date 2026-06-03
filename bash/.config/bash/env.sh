@@ -1,5 +1,7 @@
 export ANDROID_HOME=/opt/android-sdk
 
+export PATH=$PATH:$HOME/go/bin
+
 # pnpm
 export PNPM_HOME="/home/jrtilak/.local/share/pnpm"
 case ":$PATH:" in

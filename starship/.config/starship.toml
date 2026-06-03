@@ -3,7 +3,7 @@
 add_newline = true
 
 format = """
-$username\
+╭─$username\
 $hostname\
 $localip\
 $shlvl\
@@ -99,15 +99,18 @@ $os\
 $time\
 $battery\
 $line_break\
-$jobs\
+╰─$jobs\
 $status\
 $character\
 """
 
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
 [fill]
 symbol = "─"
-style = "bold black"
-
+style = "bright-black"
 
 [aws]
 symbol = " "
@@ -189,6 +192,11 @@ format = "\\[[$symbol$loaded/$allowed]($style)\\]"
 
 [directory]
 read_only = " 󰌾"
+truncation_length = 4
+truncation_symbol = "…/"
+truncate_to_repo = false
+home_symbol = "~"
+
 
 [docker_context]
 symbol = " "

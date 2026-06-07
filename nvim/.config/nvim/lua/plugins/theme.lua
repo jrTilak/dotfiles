@@ -1,0 +1,1 @@
+/home/jrtilak/.config/omarchy/current/theme/neovim.lua

@@ -10,11 +10,11 @@
 # (don't mess with these directly, just overwrite them here!)
 source ~/.local/share/omarchy/default/bash/rc
 
+# Organized configs
 source ~/.config/bash/aliases.sh
-
 source ~/.config/bash/env.sh
-
 source ~/.config/bash/fns.sh
 
 # Attach ble.sh at the VERY BOTTOM of .bashrc
 [[ ${BLE_VERSION-} ]] && ble-attach
+

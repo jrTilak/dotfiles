@@ -1,0 +1,148 @@
+# Aura theme for Yazi
+# Colors derived from the "Aura" Omarchy theme palette
+# (omarchy-aura-theme — btop.theme / alacritty.toml)
+#
+# background  #282A36
+# foreground  #F8F8F2
+# muted/grey  #44475A
+# pink        #FFAFCC
+# cyan        #8BE9FD
+# lavender    #CBC3E3
+# magenta     #FFC8DD
+# pastel-blue #BDE0FE
+#
+# Schema reference: https://yazi-rs.github.io/docs/configuration/theme
+
+[mgr]
+cwd = { fg = "#8BE9FD" }
+
+find_keyword   = { fg = "#FFC8DD", bold = true, italic = true, underline = true }
+find_position  = { fg = "#FFAFCC", bg = "reset", bold = true, italic = true }
+
+symlink_target = { fg = "#44475A", italic = true }
+
+marker_copied   = { fg = "#BDE0FE", bg = "#BDE0FE" }
+marker_cut      = { fg = "#FFAFCC", bg = "#FFAFCC" }
+marker_marked   = { fg = "#8BE9FD", bg = "#8BE9FD" }
+marker_selected = { fg = "#CBC3E3", bg = "#CBC3E3" }
+
+count_copied   = { fg = "#282A36", bg = "#BDE0FE" }
+count_cut      = { fg = "#282A36", bg = "#FFAFCC" }
+count_selected = { fg = "#282A36", bg = "#CBC3E3" }
+
+border_symbol = "│"
+border_style  = { fg = "#44475A" }
+
+[indicator]
+parent  = { reversed = true }
+current = { reversed = true }
+preview = { underline = true }
+padding = { open = "▐", close = "▌" }
+
+[tabs]
+active   = { fg = "#282A36", bg = "#8BE9FD" }
+inactive = { fg = "#F8F8F2", bg = "#44475A" }
+
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+[mode]
+normal_main = { fg = "#282A36", bg = "#8BE9FD", bold = true }
+normal_alt  = { fg = "#8BE9FD", bg = "#282A36" }
+
+select_main = { fg = "#282A36", bg = "#CBC3E3", bold = true }
+select_alt  = { fg = "#CBC3E3", bg = "#282A36" }
+
+unset_main = { fg = "#282A36", bg = "#FFAFCC", bold = true }
+unset_alt  = { fg = "#FFAFCC", bg = "#282A36" }
+
+[status]
+sep_left  = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+perm_type  = { fg = "#8BE9FD" }
+perm_read  = { fg = "#CBC3E3" }
+perm_write = { fg = "#FFAFCC" }
+perm_exec  = { fg = "#BDE0FE" }
+perm_sep   = { fg = "#44475A" }
+
+progress_label  = { fg = "#F8F8F2", bold = true }
+progress_normal = { fg = "#8BE9FD", bg = "#44475A" }
+progress_error  = { fg = "#FFAFCC", bg = "#44475A" }
+
+[which]
+mask            = { bg = "#282A36" }
+cand            = { fg = "#BDE0FE" }
+rest            = { fg = "#44475A" }
+desc            = { fg = "#FFC8DD" }
+separator       = "  "
+separator_style = { fg = "#44475A" }
+
+[confirm]
+border  = { fg = "#8BE9FD" }
+title   = {}
+body    = {}
+list    = {}
+btn_yes = { reversed = true }
+btn_no  = {}
+btn_labels = ["  Yes  ", "  No  "]
+
+[spot]
+border   = { fg = "#8BE9FD" }
+title    = {}
+tbl_col  = { fg = "#8BE9FD" }
+tbl_cell = {}
+
+[notify]
+title_info  = { fg = "#8BE9FD" }
+title_warn  = { fg = "#CBC3E3" }
+title_error = { fg = "#FFAFCC" }
+
+[pick]
+border   = { fg = "#8BE9FD" }
+active   = { fg = "#FFC8DD" }
+inactive = {}
+
+[input]
+border   = { fg = "#8BE9FD" }
+title    = {}
+value    = {}
+selected = { reversed = true }
+
+[cmp]
+border   = { fg = "#8BE9FD" }
+active   = { fg = "#FFC8DD" }
+inactive = {}
+
+[tasks]
+border  = { fg = "#8BE9FD" }
+title   = {}
+hovered = { underline = true }
+
+[help]
+on      = { fg = "#FFC8DD" }
+run     = { fg = "#BDE0FE" }
+desc    = { fg = "#F8F8F2" }
+hovered = { bg = "#44475A", bold = true }
+footer  = { fg = "#282A36", bg = "#F8F8F2" }
+
+[filetype]
+rules = [
+	{ mime = "image/*", fg = "#BDE0FE" },
+	{ mime = "{audio,video}/*", fg = "#FFC8DD" },
+	{ mime = "inode/empty", fg = "#44475A" },
+	{ mime = "application/zip", fg = "#FFAFCC" },
+	{ mime = "application/gzip", fg = "#FFAFCC" },
+	{ mime = "application/x-tar", fg = "#FFAFCC" },
+	{ mime = "application/x-bzip2", fg = "#FFAFCC" },
+	{ mime = "application/x-7z-compressed", fg = "#FFAFCC" },
+	{ mime = "application/x-rar", fg = "#FFAFCC" },
+	{ mime = "application/pdf", fg = "#CBC3E3" },
+	{ mime = "application/msword", fg = "#CBC3E3" },
+	{ mime = "application/vnd.openxmlformats-officedocument.*", fg = "#CBC3E3" },
+
+	{ url = "*", is = "orphan", fg = "#FFAFCC" },
+	{ url = "*", is = "exec", fg = "#BDE0FE" },
+
+	{ url = "*/", fg = "#8BE9FD" },
+]

@@ -1,4 +1,13 @@
 export ANDROID_HOME=/opt/android-sdk
+export ANDROID_SDK_ROOT=/opt/android-sdk
+case ":$PATH:" in
+  *":$ANDROID_HOME/emulator:"*) ;;
+  *) export PATH="$ANDROID_HOME/emulator:$PATH" ;;
+esac
+case ":$PATH:" in
+  *":$ANDROID_HOME/platform-tools:"*) ;;
+  *) export PATH="$ANDROID_HOME/platform-tools:$PATH" ;;
+esac
 
 export PATH=$PATH:$HOME/go/bin
 
@@ -18,4 +27,7 @@ export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+
+. "$HOME/.cargo/env"
+PATH="$HOME/.cargo/bin:$PATH"
 

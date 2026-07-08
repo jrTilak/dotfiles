@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if command -v swaync-client >/dev/null 2>&1 && [ "$(swaync-client --get-dnd 2>/dev/null)" = "true" ]; then
+  exit 0
+fi
+
+if [ -n "$SWAYNC_SOUND_FILE" ] && [ -r "$SWAYNC_SOUND_FILE" ]; then
+  exec pw-play "$SWAYNC_SOUND_FILE"
+fi
+
+case "$SWAYNC_URGENCY" in
+  Critical)
+    exec canberra-gtk-play -i dialog-warning -d "swaync"
+    ;;
+  *)
+    exec canberra-gtk-play -i message-new-instant -d "swaync"
+    ;;
+esac

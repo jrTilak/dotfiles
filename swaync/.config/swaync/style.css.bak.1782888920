@@ -1,0 +1,100 @@
+@import "../omarchy/current/theme/swayosd.css";
+
+* {
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 12px;
+  color: @label;
+}
+
+.control-center,
+.notification-row .notification-background,
+.floating-notifications .notification {
+  background: alpha(@background-color, 0.96);
+  border: 1px solid alpha(@border-color, 0.72);
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.control-center {
+  padding: 10px;
+}
+
+.notification-row {
+  outline: none;
+}
+
+.notification-row .notification-background {
+  margin: 6px 8px;
+  padding: 0;
+}
+
+.notification {
+  padding: 10px;
+}
+
+.notification-content {
+  margin: 0;
+  padding: 0;
+}
+
+.summary {
+  font-weight: 700;
+}
+
+.time,
+.body {
+  color: alpha(@label, 0.78);
+}
+
+.close-button,
+.notification-action,
+.widget-title button,
+.widget-dnd switch,
+.widget-inhibitors button {
+  background: alpha(@label, 0.08);
+  border: 1px solid alpha(@border-color, 0.42);
+  border-radius: 6px;
+  color: @label;
+}
+
+.close-button:hover,
+.notification-action:hover,
+.widget-title button:hover,
+.widget-inhibitors button:hover {
+  background: alpha(@border-color, 0.18);
+}
+
+.notification.critical {
+  border-left: 3px solid #ffafcc;
+}
+
+.notification.low {
+  opacity: 0.82;
+}
+
+.widget-title,
+.widget-dnd,
+.widget-inhibitors,
+.widget-mpris,
+.widget-notifications {
+  background: transparent;
+  margin: 0 0 8px;
+}
+
+.widget-title {
+  font-weight: 700;
+}
+
+.widget-dnd switch:checked {
+  background: alpha(@border-color, 0.72);
+}
+
+.widget-dnd switch slider {
+  background: @label;
+}
+
+.widget-mpris {
+  border: 1px solid alpha(@border-color, 0.34);
+  border-radius: 8px;
+  padding: 8px;
+}

@@ -12,7 +12,7 @@
     "custom/voxtype",
     "custom/screenrecording-indicator",
     "custom/idle-indicator",
-    "custom/notification-silencing-indicator",
+    "custom/notification",
   ],
   "modules-right": [
     "group/tray-expander",
@@ -158,11 +158,25 @@
     "signal": 9,
     "return-type": "json",
   },
-  "custom/notification-silencing-indicator": {
-    "on-click": "omarchy-toggle-notification-silencing",
-    "exec": "$OMARCHY_PATH/default/waybar/indicators/notification-silencing.sh",
-    "signal": 10,
+  "custom/notification": {
+    "tooltip": true,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "󱅫",
+      "none": "",
+      "dnd-notification": "󰂠",
+      "dnd-none": "󰂛",
+      "inhibited-notification": "󰂛",
+      "inhibited-none": "󰪑",
+      "dnd-inhibited-notification": "󰂛",
+      "dnd-inhibited-none": "󰪑",
+    },
     "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client --subscribe-waybar",
+    "on-click": "swaync-client --toggle-panel --skip-wait",
+    "on-click-right": "swaync-client --toggle-dnd --skip-wait",
+    "escape": true,
   },
   "custom/voxtype": {
     "exec": "omarchy-voxtype-status",

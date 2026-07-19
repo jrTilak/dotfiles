@@ -194,7 +194,7 @@ format = "\\[[$symbol$loaded/$allowed]($style)\\]"
 read_only = " 󰌾"
 truncation_length = 4
 truncation_symbol = "…/"
-truncate_to_repo = false
+truncate_to_repo = true
 home_symbol = "~"
 
 

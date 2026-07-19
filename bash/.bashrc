@@ -18,3 +18,5 @@ source ~/.config/bash/fns.sh
 # Attach ble.sh at the VERY BOTTOM of .bashrc
 [[ ${BLE_VERSION-} ]] && ble-attach
 
+
+. "$HOME/.local/share/../bin/env"

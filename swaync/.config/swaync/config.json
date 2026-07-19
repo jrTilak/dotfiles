@@ -1,7 +1,7 @@
 {
   "ignore-gtk-theme": true,
   "positionX": "right",
-  "positionY": "top",
+  "positionY": "bottom",
   "layer": "overlay",
   "control-center-positionX": "right",
   "control-center-positionY": "top",
@@ -28,13 +28,7 @@
   "text-empty": "No notifications",
   "relative-timestamps": true,
   "notification-2fa-action": true,
-  "widgets": [
-    "title",
-    "dnd",
-    "inhibitors",
-    "mpris",
-    "notifications"
-  ],
+  "widgets": ["title", "dnd", "inhibitors", "mpris", "notifications"],
   "widget-config": {
     "title": {
       "text": "Notifications",

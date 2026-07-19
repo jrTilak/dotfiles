@@ -1,0 +1,29 @@
+#!/bin/bash
+
+YOUTUBE_URL="https://www.youtube.com/"
+HELIUM_USER_DATA_DIR="$HOME/.config/net.imput.helium"
+HELIUM_PROFILE="Default"
+TARGET_WORKSPACE="9"
+
+IFS=$'\t' read -r ADDR APP_WORKSPACE < <(hyprctl clients -j | jq -r '
+.[] |
+select(
+    ((.class // "") == "chrome-www.youtube.com__-Default") or
+    ((.title // "") | test("youtube"; "i"))
+) |
+[.address, (.workspace.id | tostring)] |
+@tsv
+' | head -n1)
+
+if [[ -n $ADDR ]]; then
+    if [[ $APP_WORKSPACE != "$TARGET_WORKSPACE" ]]; then
+        hyprctl dispatch movetoworkspacesilent "$TARGET_WORKSPACE,address:$ADDR"
+    fi
+    hyprctl dispatch focuswindow "address:$ADDR"
+else
+    hyprctl dispatch workspace "$TARGET_WORKSPACE"
+    exec setsid uwsm-app -- /usr/bin/helium-browser \
+        --user-data-dir="$HELIUM_USER_DATA_DIR" \
+        --profile-directory="$HELIUM_PROFILE" \
+        --app="$YOUTUBE_URL"
+fi

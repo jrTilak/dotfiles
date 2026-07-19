@@ -1,0 +1,44 @@
+#!/bin/bash
+
+T3_CODE_APPIMAGE="$HOME/Applications/AppImages/t3_code_alpha.appimage"
+T3_CODE_ICON="$HOME/Applications/AppImages/.icons/t3_code_alpha"
+TARGET_WORKSPACE="10"
+
+IFS=$'\t' read -r ADDR APP_WORKSPACE < <(hyprctl clients -j | jq -r '
+.[] |
+select(
+    ((.class // "") == "t3code") or
+    ((.title // "") | test("^T3 Code"; "i"))
+) |
+[.address, (.workspace.id | tostring)] |
+@tsv
+' | head -n1)
+
+if [[ -n $ADDR ]]; then
+    if [[ $APP_WORKSPACE != "$TARGET_WORKSPACE" ]]; then
+        hyprctl dispatch movetoworkspacesilent "$TARGET_WORKSPACE,address:$ADDR"
+    fi
+    hyprctl dispatch focuswindow "address:$ADDR"
+else
+    if [[ ! -x $T3_CODE_APPIMAGE ]]; then
+        notify-send \
+            --urgency=critical \
+            --app-name="T3 Code" \
+            "T3 Code not found" \
+            "$T3_CODE_APPIMAGE"
+        exit 1
+    fi
+
+    hyprctl dispatch workspace "$TARGET_WORKSPACE"
+    notify-send \
+        --urgency=low \
+        --expire-time=8000 \
+        --app-name="T3 Code" \
+        --icon="$T3_CODE_ICON" \
+        "Launching T3 Code…" \
+        "Cold start can take a moment."
+
+    exec setsid uwsm-app -- env DESKTOPINTEGRATION=1 \
+        "$T3_CODE_APPIMAGE" \
+        --no-sandbox
+fi

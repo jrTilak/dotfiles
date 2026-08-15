@@ -1,0 +1,14 @@
+-- See https://wiki.hypr.land/Configuring/Basics/Monitors/
+-- List current monitors and supported resolutions with: hyprctl monitors all
+
+hl.env("GDK_SCALE", "1")
+
+-- Mirror HDMI output to the laptop panel.
+hl.monitor({ output = "eDP-1", mode = "1920x1080@60", position = "0x0", scale = 1 })
+hl.monitor({
+    output = "HDMI-A-1",
+    mode = "1920x1080@60",
+    position = "0x0",
+    scale = 1,
+    mirror = "eDP-1",
+})

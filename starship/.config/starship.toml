@@ -94,10 +94,6 @@ $crystal\
 $custom\
 $sudo\
 $cmd_duration\
-$fill\
-$os\
-$time\
-$battery\
 $line_break\
 ╰─$jobs\
 $status\
@@ -108,9 +104,6 @@ $character\
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
 
-[fill]
-symbol = "─"
-style = "bright-black"
 
 [aws]
 symbol = " "
@@ -119,28 +112,6 @@ format = "\\[[$symbol($profile)(\\($region\\))(\\[$duration\\])]($style)\\]"
 [azure]
 symbol = " "
 format = "\\[[$symbol($subscription)]($style)\\]"
-
-[battery]
-full_symbol = "󰁹 "
-charging_symbol = "󰂄 "
-discharging_symbol = "󰂃 "
-unknown_symbol = "󰂑 "
-empty_symbol = "󰂎 "
-format = "\\[[$symbol$percentage]($style)\\]"
-disabled = false
-
-[[battery.display]]
-threshold = 100
-style = "bold green"
-
-[[battery.display]]
-threshold = 30
-style = "bold yellow"
-
-[[battery.display]]
-threshold = 10
-style = "bold red"
-
 
 [buf]
 symbol = " "
@@ -350,70 +321,6 @@ format = "\\[[$symbol($version)]($style)\\]"
 symbol = " "
 format = "\\[[$symbol$cloud(\\($project\\))]($style)\\]"
 
-[os]
-format = "\\[[$symbol]($style)\\]"
-disabled = false
-
-[os.symbols]
-AIX = " "
-AlmaLinux = " "
-Alpaquita = " "
-Alpine = " "
-ALTLinux = " "
-Amazon = " "
-Android = " "
-AOSC = " "
-Arch = " "
-Artix = " "
-Bluefin = " "
-CachyOS = " "
-CentOS = " "
-Debian = " "
-DragonFly = " "
-Elementary = " "
-Emscripten = " "
-EndeavourOS = " "
-Fedora = " "
-FreeBSD = " "
-Garuda = " "
-Gentoo = " "
-HardenedBSD = "󰞌 "
-Illumos = " "
-InstantOS = " "
-Ios = "󰀷 "
-Kali = " "
-Linux = " "
-Mabox = " "
-Macos = " "
-Manjaro = " "
-Mariner = " "
-MidnightBSD = " "
-Mint = " "
-NetBSD = " "
-NixOS = " "
-Nobara = " "
-OpenBSD = " "
-OpenCloudOS = " "
-openEuler = " "
-openSUSE = " "
-OracleLinux = "󰺡 "
-PikaOS = " "
-Pop = " "
-Raspbian = " "
-Redhat = "󱄛 "
-RedHatEnterprise = "󱄛 "
-Redox = "󰀘 "
-RockyLinux = " "
-Solus = " "
-SUSE = " "
-Ubuntu = " "
-Ultramarine = " "
-Unknown = " "
-Uos = " "
-Void = " "
-Windows = "󰍲 "
-Zorin = " "
-
 [package]
 symbol = "󰏗 "
 format = "\\[[$symbol$version]($style)\\]"
@@ -553,12 +460,6 @@ format = "\\[[$symbol($version)]($style)\\]"
 
 [shell]
 format = "\\[[$indicator]($style)\\]"
-
-[time]
-disabled = false
-format = "\\[[$time]($style)\\]"
-time_format = "%H:%M"
-
 
 [username]
 format = "\\[[$user]($style)\\]"

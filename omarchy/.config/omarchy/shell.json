@@ -24,7 +24,7 @@
       ],
       "left": [
         {
-          "id": "omarchy.menu"
+          "id": "jrtilak.menu"
         },
         {
           "id": "omarchy.workspaces"
@@ -64,13 +64,20 @@
   "plugins": [
     {
       "id": "jrtilak.lock"
+    },
+    {
+      "id": "jrtilak.notifications"
     }
   ],
   "version": 1,
   "disabledPlugins": [
-    "omarchy.lock"
+    "omarchy.lock",
+    "omarchy.menu",
+    "omarchy.notifications"
   ],
   "cloneSourceRestores": [
-    "jrtilak.lock"
+    "jrtilak.lock",
+    "jrtilak.menu",
+    "jrtilak.notifications"
   ]
 }

@@ -69,7 +69,10 @@ BorderSurface {
   implicitWidth: Style.space(380)
   // Add vertical border insets so mainColumn (inset by border on top/left/right)
   // doesn't push content under the bottom edge.
-  implicitHeight: mainColumn.implicitHeight + borderTop + borderBottom
+  implicitHeight: Math.max(
+    root.singleLineToast ? Style.space(52) : 0,
+    mainColumn.implicitHeight + borderTop + borderBottom
+  )
   radius: cornerRadius
   color: severityBackground
   opacity: urgency === 0 ? 0.82 : 1.0
@@ -115,11 +118,11 @@ BorderSurface {
     // Text content.
     RowLayout {
       Layout.fillWidth: true
-      Layout.leftMargin: Style.space(12)
-      Layout.rightMargin: Style.space(12)
-      Layout.topMargin: root.singleLineToast ? Style.space(7) : Style.space(10)
-      Layout.bottomMargin: root.singleLineToast ? Style.space(7) : Style.space(10)
-      spacing: root.collapseRedundantIcon ? 0 : (root.compactGlyph ? Style.space(8) : Style.space(12))
+      Layout.leftMargin: root.singleLineToast ? Style.space(16) : Style.space(12)
+      Layout.rightMargin: root.singleLineToast ? Style.space(16) : Style.space(12)
+      Layout.topMargin: root.singleLineToast ? Style.space(11) : Style.space(10)
+      Layout.bottomMargin: root.singleLineToast ? Style.space(11) : Style.space(10)
+      spacing: root.collapseRedundantIcon ? 0 : (root.compactGlyph ? Style.space(10) : Style.space(12))
 
       Item {
         id: smallIconSlot
@@ -161,7 +164,7 @@ BorderSurface {
         text: root.glyph
         color: Color.notifications.text
         font.family: root.fontFamily
-        font.pixelSize: Style.font.icon
+        font.pixelSize: Style.font.iconLarge
       }
 
       ColumnLayout {

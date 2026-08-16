@@ -70,11 +70,7 @@
     }
   ],
   "version": 1,
-  "disabledPlugins": [
-    "omarchy.lock",
-    "omarchy.menu",
-    "omarchy.notifications"
-  ],
+  "disabledPlugins": ["omarchy.lock", "omarchy.menu", "omarchy.notifications"],
   "cloneSourceRestores": [
     "jrtilak.lock",
     "jrtilak.menu",

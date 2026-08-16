@@ -16,12 +16,14 @@ select(
 ' | head -n1)
 
 if [[ -n $ADDR ]]; then
+    hyprctl dispatch "hl.dsp.focus({ window = \"address:$ADDR\" })"
     if [[ $APP_WORKSPACE != "$TARGET_WORKSPACE" ]]; then
-        hyprctl dispatch movetoworkspacesilent "$TARGET_WORKSPACE,address:$ADDR"
+        hyprctl dispatch "hl.dsp.window.move({ workspace = \"$TARGET_WORKSPACE\", follow = false })"
     fi
-    hyprctl dispatch focuswindow "address:$ADDR"
+    hyprctl dispatch "hl.dsp.focus({ workspace = \"$TARGET_WORKSPACE\" })"
+    hyprctl dispatch "hl.dsp.focus({ window = \"address:$ADDR\" })"
 else
-    hyprctl dispatch workspace "$TARGET_WORKSPACE"
+    hyprctl dispatch "hl.dsp.focus({ workspace = \"$TARGET_WORKSPACE\" })"
     exec setsid uwsm-app -- /usr/bin/helium-browser \
         --user-data-dir="$HELIUM_USER_DATA_DIR" \
         --profile-directory="$HELIUM_PROFILE" \

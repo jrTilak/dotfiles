@@ -27,19 +27,22 @@ Item {
   readonly property string userName: Quickshell.env("USER") || Quickshell.env("LOGNAME") || "user"
 
   readonly property string placeholderText: "Enter Password"
-  readonly property int fieldWidth: 360
-  readonly property int fieldHeight: 48
-  readonly property int outlineThickness: 1
-  readonly property int fieldFontSize: Math.round(Style.font.heading * 1.125)
-  readonly property int passwordDotFontSize: Math.round(Style.font.heading * 1.33)
-  readonly property int passwordDotLetterSpacing: Math.round(Style.font.heading * 0.19)
-  // Space to keep clear on each side of the field for the fingerprint icon
-  // (icon width plus a gap) so the centered dots never run under it.
-  readonly property real fingerprintReserve: fingerprintConfigured ? Math.round(fingerprintIcon.implicitWidth + 12) : 0
+  readonly property int fieldWidth: Style.space(360)
+  readonly property int fieldHeight: Math.max(Style.space(48), Style.spacing.controlHeight)
+  readonly property int outlineThickness: Math.max(Style.spacing.hairline, Style.normalBorderWidth)
+  readonly property int fieldFontSize: Style.font.heading
+  readonly property int passwordDotFontSize: Style.font.display
+  readonly property int passwordDotLetterSpacing: Math.max(1, Math.round(Style.font.body * 0.25))
+  readonly property int topInset: Style.space(44)
+  readonly property int clockDateGap: Style.space(34)
+  readonly property int avatarSize: Style.space(72)
+  readonly property int powerItemWidth: Style.space(82)
+  readonly property int powerItemHeight: Style.space(72)
+  readonly property real fingerprintReserve: fingerprintConfigured ? Math.round(fingerprintIcon.implicitWidth + Style.spacing.xxl) : 0
   // Shrink the dots to fit once the password outgrows the field, so every
   // keystroke stays visible — otherwise long passwords clip with no feedback.
   readonly property real passwordDotScale: dotMetrics.advanceWidth > 0
-    ? Math.min(1, (passwordInput.width - 4) / dotMetrics.advanceWidth)
+    ? Math.min(1, (passwordInput.width - Style.spacing.sm) / dotMetrics.advanceWidth)
     : 1
   readonly property bool showPasswordCursor: inputEnabled && !authenticatingPassword && failureMessage.length === 0
   readonly property bool errorState: failureMessage.length > 0
@@ -151,43 +154,43 @@ Item {
 
     Text {
       anchors.top: parent.top
-      anchors.topMargin: 44
+      anchors.topMargin: root.topInset
       anchors.horizontalCenter: parent.horizontalCenter
       text: Qt.formatDateTime(root.currentTime, "HH:mm")
       color: Color.lock.text
       font.family: Style.font.family
-      font.pixelSize: 82
+      font.pixelSize: Style.font.displayLarge * 2
     }
 
     Text {
       anchors.top: parent.top
-      anchors.topMargin: 188
+      anchors.topMargin: root.topInset + (Style.font.displayLarge * 2) + root.clockDateGap
       anchors.horizontalCenter: parent.horizontalCenter
       text: Qt.formatDateTime(root.currentTime, "ddd, dd MMM")
       color: Color.lock.placeholder
       font.family: Style.font.family
-      font.pixelSize: 18
+      font.pixelSize: Style.font.iconLarge
     }
 
     Row {
       anchors.top: parent.top
       anchors.right: parent.right
-      anchors.topMargin: 20
-      anchors.rightMargin: 24
-      spacing: 10
+      anchors.topMargin: Style.space(20)
+      anchors.rightMargin: Style.space(24)
+      spacing: Style.spacing.xl
 
       Text {
         text: root.batteryGlyph
         color: Color.lock.text
         font.family: Style.font.family
-        font.pixelSize: 16
+        font.pixelSize: Style.font.heading
       }
 
       Text {
         text: root.batteryPercentage
         color: Color.lock.text
         font.family: Style.font.family
-        font.pixelSize: 16
+        font.pixelSize: Style.font.heading
       }
     }
 
@@ -200,18 +203,18 @@ Item {
 
     Rectangle {
       anchors.centerIn: parent
-      anchors.verticalCenterOffset: -16
-      width: 72
-      height: 72
+      anchors.verticalCenterOffset: -Style.space(16)
+      width: root.avatarSize
+      height: root.avatarSize
       radius: width / 2
       color: "transparent"
       border.color: Color.lock.borderActive
-      border.width: 3
+      border.width: Math.max(Style.spacing.hairline, Style.normalBorderWidth)
       clip: true
 
       Image {
         anchors.fill: parent
-        anchors.margins: 3
+        anchors.margins: Math.max(Style.spacing.hairline, Style.normalBorderWidth)
         source: root.fileUrl(root.homePath + "/.face")
         fillMode: Image.PreserveAspectCrop
         asynchronous: true
@@ -221,11 +224,11 @@ Item {
 
     Text {
       anchors.centerIn: parent
-      anchors.verticalCenterOffset: 54
+      anchors.verticalCenterOffset: Style.space(54)
       text: root.hostName.length > 0 ? root.hostName + "@" + root.userName : root.userName
       color: Color.lock.text
       font.family: Style.font.family
-      font.pixelSize: 18
+      font.pixelSize: Style.font.iconLarge
     }
 
     BorderSurface {
@@ -233,7 +236,7 @@ Item {
       width: root.fieldWidth
       height: root.fieldHeight
       anchors.centerIn: parent
-      anchors.verticalCenterOffset: 116
+      anchors.verticalCenterOffset: Style.space(116)
       color: Color.lock.background
       borderSpec: root.inputBorderSpec
       radius: Style.cornerRadius
@@ -245,9 +248,9 @@ Item {
         anchors.topMargin: inputField.borderTop
         // Reserve the fingerprint icon's width on both sides so the centered
         // dots stay symmetric and never slide under the icon as they grow.
-        anchors.rightMargin: inputField.borderRight + 18 + root.fingerprintReserve
+        anchors.rightMargin: inputField.borderRight + Style.spacing.huge + root.fingerprintReserve
         anchors.bottomMargin: inputField.borderBottom
-        anchors.leftMargin: inputField.borderLeft + 18 + root.fingerprintReserve
+        anchors.leftMargin: inputField.borderLeft + Style.spacing.huge + root.fingerprintReserve
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
         activeFocusOnPress: true
@@ -265,7 +268,7 @@ Item {
         font.letterSpacing: text.length > 0 ? root.passwordDotLetterSpacing * root.passwordDotScale : 0
         cursorVisible: activeFocus && root.showPasswordCursor && text.length > 0
         cursorDelegate: Rectangle {
-          width: 2
+          width: Style.spacing.hairline
           color: Color.lock.text
           visible: passwordInput.cursorVisible
         }
@@ -313,7 +316,7 @@ Item {
         id: fingerprintIcon
         objectName: "fingerprintIndicator"
         anchors.right: parent.right
-        anchors.rightMargin: inputField.borderRight + 18
+        anchors.rightMargin: inputField.borderRight + Style.spacing.huge
         anchors.verticalCenter: parent.verticalCenter
         visible: root.fingerprintConfigured
         text: "󰈷"
@@ -327,8 +330,8 @@ Item {
 
     Row {
       anchors.centerIn: parent
-      anchors.verticalCenterOffset: 208
-      spacing: 0
+      anchors.verticalCenterOffset: Style.space(208)
+      spacing: Style.spacing.sm
 
       Repeater {
         model: [
@@ -339,19 +342,19 @@ Item {
 
         Item {
           required property var modelData
-          width: 82
-          height: 72
+          width: root.powerItemWidth
+          height: root.powerItemHeight
 
           Column {
             anchors.centerIn: parent
-            spacing: 6
+            spacing: Style.spacing.md
 
             Text {
               anchors.horizontalCenter: parent.horizontalCenter
               text: modelData.icon
               color: Color.lock.text
               font.family: Style.font.family
-              font.pixelSize: 20
+              font.pixelSize: Style.font.display
             }
 
             Text {
@@ -359,7 +362,7 @@ Item {
               text: modelData.label
               color: Color.lock.text
               font.family: Style.font.family
-              font.pixelSize: 9
+              font.pixelSize: Style.font.caption
             }
           }
 

@@ -2,13 +2,13 @@
 
 YOUTUBE_URL="https://www.youtube.com/"
 HELIUM_USER_DATA_DIR="$HOME/.config/net.imput.helium"
-HELIUM_PROFILE="Default"
+HELIUM_PROFILE="Profile 2"
 TARGET_WORKSPACE="9"
 
 IFS=$'\t' read -r ADDR APP_WORKSPACE < <(hyprctl clients -j | jq -r '
 .[] |
 select(
-    ((.class // "") == "chrome-www.youtube.com__-Default") or
+    ((.class // "") | test("^chrome-www\\.youtube\\.com__-(Default|Profile_2|Profile 2)$")) or
     ((.title // "") | test("youtube"; "i"))
 ) |
 [.address, (.workspace.id | tostring)] |

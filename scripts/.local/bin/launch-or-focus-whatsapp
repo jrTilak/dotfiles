@@ -2,13 +2,13 @@
 
 WHATSAPP_URL="https://web.whatsapp.com/"
 HELIUM_USER_DATA_DIR="$HOME/.config/net.imput.helium"
-HELIUM_PROFILE="Default"
+HELIUM_PROFILE="Profile 2"
 TARGET_WORKSPACE="9"
 
 IFS=$'\t' read -r ADDR APP_WORKSPACE < <(hyprctl clients -j | jq -r '
 .[] |
 select(
-    ((.class // "") == "chrome-web.whatsapp.com__-Default") or
+    ((.class // "") | test("^chrome-web\\.whatsapp\\.com__-(Default|Profile_2|Profile 2)$")) or
     ((.title // "") | test("whatsapp"; "i"))
 ) |
 [.address, (.workspace.id | tostring)] |

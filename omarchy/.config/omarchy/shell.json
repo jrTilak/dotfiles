@@ -7,10 +7,12 @@
           "id": "omarchy.indicators"
         },
         {
+          "id": "omarchy.clock",
           "format": "dddd HH:mm",
           "formatAlt": "d MMMM 'W'ww yyyy",
-          "id": "omarchy.clock",
-          "verticalFormat": "HH\n—\nmm"
+          "verticalFormat": "HH\n—\nmm",
+          "birthYear": 0,
+          "lifeExpectancy": 30
         },
         {
           "id": "omarchy.keyboard-layout"
@@ -32,10 +34,27 @@
       ],
       "right": [
         {
-          "id": "omarchy.tray"
-        },
-        {
-          "id": "omarchy.agents"
+          "id": "jrtilak.widget-drawer",
+          "contains": [
+            {
+              "id": "io.github.pjgeutjens.clockwork"
+            },
+            {
+              "id": "crmne.hyprmoncfg"
+            },
+            {
+              "id": "omarchy.tailscale"
+            },
+            {
+              "id": "im0001gt.hw-tooltip"
+            },
+            {
+              "id": "omarchy.agents"
+            },
+            {
+              "id": "omarchy.monitor"
+            }
+          ]
         },
         {
           "id": "omarchy.bluetooth"
@@ -45,9 +64,6 @@
         },
         {
           "id": "omarchy.audio"
-        },
-        {
-          "id": "omarchy.monitor"
         },
         {
           "id": "omarchy.power"
@@ -67,10 +83,33 @@
     },
     {
       "id": "jrtilak.notifications"
+    },
+    {
+      "id": "io.github.pjgeutjens.clockwork"
+    },
+    {
+      "id": "crmne.hyprmoncfg"
+    },
+    {
+      "id": "omarchy.tailscale"
+    },
+    {
+      "id": "im0001gt.hw-tooltip"
+    },
+    {
+      "id": "omarchy.agents"
+    },
+    {
+      "id": "omarchy.monitor"
     }
   ],
   "version": 1,
-  "disabledPlugins": ["omarchy.lock", "omarchy.menu", "omarchy.notifications"],
+  "disabledPlugins": [
+    "omarchy.lock",
+    "omarchy.menu",
+    "omarchy.notifications",
+    "omarchy.tray"
+  ],
   "cloneSourceRestores": [
     "jrtilak.lock",
     "jrtilak.menu",

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "jrtilak.widget-drawer",
+  "name": "Widget Drawer",
+  "version": "1.1.0",
+  "author": "jrtilak",
+  "description": "Collapses Omarchy widgets and native tray icons behind a hoverable, click-to-pin chevron.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Widget Drawer",
+    "description": "Reveal native tray icons and configured bar widgets on hover, or pin them open with a click.",
+    "category": "Layout",
+    "allowMultiple": true,
+    "defaultSection": "right"
+  }
+}

@@ -1,32 +1,14 @@
-export ANDROID_HOME=/opt/android-sdk
-export ANDROID_SDK_ROOT=/opt/android-sdk
-case ":$PATH:" in
-  *":$ANDROID_HOME/emulator:"*) ;;
-  *) export PATH="$ANDROID_HOME/emulator:$PATH" ;;
-esac
+export ANDROID_HOME="$HOME/Android/Sdk"
+export ANDROID_SDK_ROOT="$ANDROID_HOME"
+
 case ":$PATH:" in
   *":$ANDROID_HOME/platform-tools:"*) ;;
-  *) export PATH="$ANDROID_HOME/platform-tools:$PATH" ;;
+  *) PATH="$ANDROID_HOME/platform-tools:$PATH" ;;
 esac
 
-export PATH=$PATH:$HOME/go/bin
-
-export PATH="$HOME/.cache/.bun/bin:$PATH"
-
-export PATH="$PATH:$HOME.lmstudio/bin"
-
-# pnpm
-export PNPM_HOME="/home/jrtilak/.local/share/pnpm"
 case ":$PATH:" in
-  *":$PNPM_HOME/bin:"*) ;;
-  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+  *":$ANDROID_HOME/cmdline-tools/latest/bin:"*) ;;
+  *) PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$PATH" ;;
 esac
-# pnpm end
 
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-
-. "$HOME/.cargo/env"
-PATH="$HOME/.cargo/bin:$PATH"
+export PATH

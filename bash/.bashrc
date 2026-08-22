@@ -27,5 +27,12 @@ source ~/.config/bash/fns.sh
 # Attach ble.sh at the VERY BOTTOM of .bashrc
 [[ ${BLE_VERSION-} ]] && ble-attach
 
+# pnpm
+export PNPM_HOME="/home/jrtilak/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
 
-. "$HOME/.local/share/../bin/env"
+. "$HOME/.cargo/env"

@@ -44,38 +44,8 @@ return {
       directory = {
         [".git"] = { glyph = "", hl = "MiniIconsOrange" },
 
-        ["android"] = { glyph = "\u{e70e}", hl = "MiniIconsGreen" },
-
-        ["config"] = { glyph = "\u{e5fc}", hl = "MiniIconsBlue" },
-        ["configs"] = { glyph = "\u{e5fc}", hl = "MiniIconsBlue" },
-
-        ["const"] = { glyph = "\u{f0ae7}", hl = "MiniIconsPurple" },
-        ["constant"] = { glyph = "\u{f0ae7}", hl = "MiniIconsPurple" },
-        ["constants"] = { glyph = "\u{f0ae7}", hl = "MiniIconsPurple" },
-
-        ["context"] = { glyph = "\u{f162a}", hl = "MiniIconsPurple" },
-        ["contexts"] = { glyph = "\u{f162a}", hl = "MiniIconsPurple" },
-
-        ["database"] = { glyph = "\u{f1c0}", hl = "MiniIconsOrange" },
-        ["db"] = { glyph = "\u{f1c0}", hl = "MiniIconsOrange" },
-
-        ["hooks"] = { glyph = "\u{f06e2}", hl = "MiniIconsAzure" },
-
-        ["lib"] = { glyph = "\u{f487}", hl = "MiniIconsBlue" },
-        ["libs"] = { glyph = "\u{f487}", hl = "MiniIconsBlue" },
-        ["util"] = { glyph = "\u{f487}", hl = "MiniIconsBlue" },
-        ["utils"] = { glyph = "\u{f487}", hl = "MiniIconsBlue" },
 
         ["node_modules"] = { glyph = "\u{e5fa}", hl = "MiniIconsGreen" },
-
-        ["screen"] = { glyph = "\u{f0e51}", hl = "MiniIconsCyan" },
-        ["screens"] = { glyph = "\u{f0e51}", hl = "MiniIconsCyan" },
-
-        ["store"] = { glyph = "\u{f162a}", hl = "MiniIconsPurple" },
-        ["stores"] = { glyph = "\u{f162a}", hl = "MiniIconsPurple" },
-
-        ["type"] = { glyph = "\u{f06e6}", hl = "MiniIconsAzure" },
-        ["types"] = { glyph = "\u{f06e6}", hl = "MiniIconsAzure" },
       },
       file = {
         ["bun.lock"] = { glyph = "\u{e76f}", hl = "MiniIconsYellow" },

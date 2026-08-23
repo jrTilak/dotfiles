@@ -271,8 +271,11 @@ BarWidget {
 
     implicitWidth: activeItem && activeItem.visible !== false ? activeItem.implicitWidth : 0
     implicitHeight: activeItem && activeItem.visible !== false ? activeItem.implicitHeight : 0
-    width: implicitWidth
-    height: implicitHeight
+    // Omarchy also routes registered WidgetButton clicks globally and does not
+    // account for ancestor clipping. Collapse the actual child geometry so
+    // those registered targets cannot overlap the neighboring module slots.
+    width: root.expanded ? implicitWidth : 0
+    height: root.expanded ? implicitHeight : 0
     // Keep the host visible. QML propagates an invisible parent's state into
     // its child, so binding this back to activeItem.visible creates a cycle
     // where every otherwise-visible widget remains hidden forever.
@@ -314,6 +317,10 @@ BarWidget {
 
   component DrawerChildrenRow: Row {
     readonly property int trayItemCount: trayIcons.itemCount
+    // Clipping only hides pixels. Omarchy's global click router also ignores
+    // ancestor clipping and enabled state, so hide the registered targets too.
+    visible: root.expanded
+    enabled: root.expanded
     spacing: 0
 
     TrayIcons {
@@ -335,6 +342,9 @@ BarWidget {
 
   component DrawerChildrenColumn: Column {
     readonly property int trayItemCount: trayIcons.itemCount
+    // Apply the same hit-test guard when the bar is vertical.
+    visible: root.expanded
+    enabled: root.expanded
     spacing: 0
 
     TrayIcons {

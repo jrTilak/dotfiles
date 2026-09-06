@@ -1,3 +1,5 @@
+-- Omarchy-specific: Register every colorscheme Omarchy may select so themes can
+-- be switched or hot-reloaded without fetching a missing plugin during startup.
 return {
 	-- Load all theme plugins but don't apply them
 	-- This ensures all colorschemes are available for hot-reloading

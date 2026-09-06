@@ -1,11 +1,10 @@
--- Clipboard for sessions whose yanks may need to reach another machine:
--- every copy is emitted as OSC 52 (inside tmux this becomes a tmux buffer,
--- rebroadcast to every attached client, local or SSH). Paste prefers the
--- local Wayland clipboard when one is available, so content copied in other
--- apps remains pasteable; without a display, paste is an OSC 52 query that
--- tmux (or the terminal) answers.
+-- Omarchy-specific: Provide clipboard support for tmux, SSH, and Herdr sessions.
+-- Copies use OSC 52 so they can reach an attached local terminal. When Wayland
+-- is available, copies also update its clipboard and pastes prefer it; otherwise,
+-- paste falls back to an OSC 52 query handled by tmux or the terminal.
 local M = {}
 
+-- Read a procfs file without letting an inaccessible process break setup.
 local function proc_lines(pid, file)
   local ok, lines = pcall(vim.fn.readfile, "/proc/" .. pid .. "/" .. file)
   return ok and lines or {}
@@ -20,6 +19,7 @@ local function proc_ppid(pid)
   end
 end
 
+-- Detect wrappers such as Herdr even when they do not export a pane variable.
 local function ancestor_process_named(name)
   local pid = vim.fn.getpid()
 

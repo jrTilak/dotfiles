@@ -11,8 +11,8 @@
           "format": "dddd HH:mm",
           "formatAlt": "d MMMM 'W'ww yyyy",
           "verticalFormat": "HH\n—\nmm",
-          "birthYear": 0,
-          "lifeExpectancy": 30
+          "birthYear": 2004,
+          "lifeExpectancy": 90
         },
         {
           "id": "omarchy.keyboard-layout"
@@ -49,12 +49,12 @@
               "id": "im0001gt.hw-tooltip"
             },
             {
-              "id": "omarchy.agents"
-            },
-            {
               "id": "omarchy.monitor"
             }
           ]
+        },
+        {
+          "id": "omarchy.agents"
         },
         {
           "id": "omarchy.bluetooth"
@@ -71,7 +71,7 @@
       ]
     },
     "position": "top",
-    "transparent": false
+    "transparent": true
   },
   "idle": {
     "lock": 300,

@@ -22,3 +22,10 @@ o.window("^chrome-web[.]whatsapp[.]com__-Default$", { workspace = "9" })
 
 -- Keep T3 Code on workspace 10 (Super + 0).
 o.window("^t3code$", { workspace = "10" })
+
+-- Show FreeRDP immediately instead of leaving it behind a fullscreen terminal.
+o.window("^xfreerdp$", {
+  fullscreen = true,
+  focus_on_activate = true,
+  no_focus = false,
+})

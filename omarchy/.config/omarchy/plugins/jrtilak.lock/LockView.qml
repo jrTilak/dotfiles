@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Effects
+import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Io
 import qs.Commons
@@ -17,6 +18,13 @@ Item {
   property bool inputEnabled: true
   property bool loadBackground: true
   property string passwordText: ""
+  property bool powerActionsEnabled: false
+  property bool canSuspend: false
+  property bool canHibernate: false
+  property bool canPowerOff: false
+  property string powerConfirmationAction: ""
+  property string pendingPowerAction: ""
+  property string failedPowerAction: ""
   property bool syncingPasswordText: false
   property date currentTime: new Date()
   property string batteryPercentage: "AC"
@@ -54,6 +62,8 @@ Item {
   signal passwordTextEdited(string password)
   signal clearFailureRequested()
   signal wakeRequested()
+  signal powerActionRequested(string action)
+  signal cancelPowerConfirmationRequested()
 
   // Cache-busts the lock background by appending `?v=`. Adding a query
   // string keeps Image's loader happy while forcing it to reload when the
@@ -99,16 +109,50 @@ Item {
     else batteryGlyph = "󰂎"
   }
 
-  function runPowerAction(action) {
-    if (!inputEnabled) return
+  function powerActionAvailable(action) {
+    if (action === "suspend") return canSuspend
+    if (action === "hibernate") return canHibernate
+    if (action === "poweroff") return canPowerOff
+    return false
+  }
+
+  function powerActionLabel(action, label) {
+    if (failedPowerAction === action) return "Failed"
+    if (pendingPowerAction === action) return "Working…"
+    if (powerConfirmationAction === action) return "Confirm"
+    return label
+  }
+
+  function powerActionAccessibleName(action, label) {
+    if (failedPowerAction === action) return label + " failed"
+    if (pendingPowerAction === action) return label + " in progress"
+    if (powerConfirmationAction === action) return "Confirm " + label.toLowerCase()
+    return label
+  }
+
+  function powerActionDescription(action) {
+    if (powerConfirmationAction === action) return "Activate again to shut down this computer"
+    if (action === "poweroff") return "Shut down this computer after confirmation"
+    if (action === "hibernate") return "Hibernate this computer while keeping the session locked"
+    return "Suspend this computer while keeping the session locked"
+  }
+
+  function activatePowerAction(action) {
+    if (!powerActionsEnabled || !powerActionAvailable(action)) return
     wakeRequested()
-    Quickshell.execDetached(["systemctl", action])
+    powerActionRequested(action)
   }
 
   onPasswordTextChanged: syncPasswordText()
   onInputEnabledChanged: {
     if (inputEnabled) Qt.callLater(forcePasswordFocus)
+    else if (powerConfirmationAction.length > 0) cancelPowerConfirmationRequested()
   }
+  onAuthenticatingPasswordChanged: {
+    if (authenticatingPassword && powerConfirmationAction.length > 0) cancelPowerConfirmationRequested()
+    if (!authenticatingPassword && inputEnabled) Qt.callLater(forcePasswordFocus)
+  }
+  onPendingPowerActionChanged: if (pendingPowerAction.length === 0 && inputEnabled) Qt.callLater(forcePasswordFocus)
   Component.onCompleted: {
     syncPasswordText()
     if (inputEnabled) Qt.callLater(forcePasswordFocus)
@@ -152,6 +196,13 @@ Item {
       contrast: -0.08
     }
 
+    // Preserve the wallpaper while keeping text legible over bright areas.
+    Rectangle {
+      anchors.fill: parent
+      color: Color.background
+      opacity: 0.24
+    }
+
     Text {
       anchors.top: parent.top
       anchors.topMargin: root.topInset
@@ -160,6 +211,8 @@ Item {
       color: Color.lock.text
       font.family: Style.font.family
       font.pixelSize: Style.font.displayLarge * 2
+      Accessible.role: Accessible.StaticText
+      Accessible.name: "Time " + text
     }
 
     Text {
@@ -170,6 +223,8 @@ Item {
       color: Color.lock.placeholder
       font.family: Style.font.family
       font.pixelSize: Style.font.iconLarge
+      Accessible.role: Accessible.StaticText
+      Accessible.name: "Date " + text
     }
 
     Row {
@@ -178,12 +233,15 @@ Item {
       anchors.topMargin: Style.space(20)
       anchors.rightMargin: Style.space(24)
       spacing: Style.spacing.xl
+      Accessible.role: Accessible.StaticText
+      Accessible.name: "Battery " + root.batteryPercentage
 
       Text {
         text: root.batteryGlyph
         color: Color.lock.text
         font.family: Style.font.family
         font.pixelSize: Style.font.heading
+        Accessible.ignored: true
       }
 
       Text {
@@ -191,6 +249,7 @@ Item {
         color: Color.lock.text
         font.family: Style.font.family
         font.pixelSize: Style.font.heading
+        Accessible.ignored: true
       }
     }
 
@@ -201,24 +260,44 @@ Item {
       onPositionChanged: root.wakeRequested()
     }
 
-    Rectangle {
+    Item {
       anchors.centerIn: parent
       anchors.verticalCenterOffset: -Style.space(16)
       width: root.avatarSize
       height: root.avatarSize
-      radius: width / 2
-      color: "transparent"
-      border.color: Color.lock.borderActive
-      border.width: Math.max(Style.spacing.hairline, Style.normalBorderWidth)
-      clip: true
+      readonly property real ringWidth: Math.max(Style.spacing.hairline, Style.normalBorderWidth)
 
       Image {
+        id: avatarImage
         anchors.fill: parent
-        anchors.margins: Math.max(Style.spacing.hairline, Style.normalBorderWidth)
+        anchors.margins: parent.ringWidth
         source: root.fileUrl(root.homePath + "/.face")
         fillMode: Image.PreserveAspectCrop
         asynchronous: true
         cache: false
+        visible: false
+      }
+
+      Rectangle {
+        id: avatarMask
+        anchors.fill: avatarImage
+        radius: width / 2
+        color: "white"
+        visible: false
+      }
+
+      OpacityMask {
+        anchors.fill: avatarImage
+        source: avatarImage
+        maskSource: avatarMask
+      }
+
+      Rectangle {
+        anchors.fill: parent
+        radius: width / 2
+        color: "transparent"
+        border.color: Color.lock.borderActive
+        border.width: parent.ringWidth
       }
     }
 
@@ -229,6 +308,8 @@ Item {
       color: Color.lock.text
       font.family: Style.font.family
       font.pixelSize: Style.font.iconLarge
+      Accessible.role: Accessible.StaticText
+      Accessible.name: text
     }
 
     BorderSurface {
@@ -254,6 +335,7 @@ Item {
         verticalAlignment: TextInput.AlignVCenter
         horizontalAlignment: TextInput.AlignHCenter
         activeFocusOnPress: true
+        activeFocusOnTab: true
         clip: true
         enabled: root.inputEnabled && !root.authenticatingPassword
         readOnly: root.authenticatingPassword
@@ -273,10 +355,24 @@ Item {
           visible: passwordInput.cursorVisible
         }
 
+        Accessible.role: Accessible.EditableText
+        Accessible.name: "Password"
+        Accessible.description: root.authenticatingPassword
+          ? "Checking password"
+          : (root.failureMessage.length > 0
+            ? root.failureMessage
+            : "Enter the password for " + root.userName)
+        Accessible.passwordEdit: true
+        Accessible.editable: enabled && !readOnly
+        Accessible.readOnly: readOnly
+        Accessible.focusable: enabled
+        Accessible.focused: activeFocus
+
         onTextChanged: {
           if (!root.syncingPasswordText) root.passwordTextEdited(text)
           if (text.length > 0) {
             root.wakeRequested()
+            if (root.powerConfirmationAction.length > 0) root.cancelPowerConfirmationRequested()
           }
           if (text.length > 0 && root.failureMessage.length > 0) root.clearFailureRequested()
         }
@@ -291,6 +387,7 @@ Item {
           root.wakeRequested()
           if (event.key === Qt.Key_Escape || (event.modifiers & Qt.ControlModifier && event.key === Qt.Key_U)) {
             root.passwordTextEdited("")
+            if (root.powerConfirmationAction.length > 0) root.cancelPowerConfirmationRequested()
             event.accepted = true
           }
         }
@@ -307,6 +404,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
+        Accessible.ignored: true
       }
 
       // Fingerprint hint pinned inside the field's right edge when a sensor is
@@ -325,6 +423,7 @@ Item {
         font.pixelSize: Math.round(root.fieldFontSize * 1.1)
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
+        Accessible.ignored: true
       }
     }
 
@@ -340,10 +439,62 @@ Item {
           { label: "Shutdown", icon: "⏻", action: "poweroff" }
         ]
 
-        Item {
+        BorderSurface {
+          id: powerButton
           required property var modelData
           width: root.powerItemWidth
           height: root.powerItemHeight
+          visible: root.powerActionAvailable(modelData.action)
+          enabled: visible && root.powerActionsEnabled
+          activeFocusOnTab: enabled
+          radius: Style.cornerRadius
+          color: powerMouse.pressed && enabled
+            ? Style.pressedFillFor(Color.lock.text, Color.lock.borderActive)
+            : activeFocus && enabled
+              ? Style.focusFillFor(Color.lock.text, Color.lock.borderActive)
+              : powerMouse.containsMouse && enabled
+                ? Style.hoverFillFor(Color.lock.text, Color.lock.borderActive)
+                : "transparent"
+          borderSpec: activeFocus && enabled
+            ? Border.controlSpec("focus", Color.lock.text, Color.lock.borderActive)
+            : powerMouse.containsMouse && enabled
+              ? Border.controlSpec("hover-cursor", Color.lock.text, Color.lock.borderActive)
+              : Border.none()
+          opacity: enabled
+            || root.pendingPowerAction === modelData.action
+            || root.failedPowerAction === modelData.action
+            || root.powerConfirmationAction === modelData.action
+              ? 1.0 : 0.42
+
+          Accessible.role: Accessible.Button
+          Accessible.name: root.powerActionAccessibleName(modelData.action, modelData.label)
+          Accessible.description: root.powerActionDescription(modelData.action)
+          Accessible.focusable: enabled
+          Accessible.focused: activeFocus
+          Accessible.pressed: powerMouse.pressed
+          Accessible.ignored: !visible
+          Accessible.onPressAction: powerButton.activate()
+
+          function activate() {
+            if (!enabled) return
+            forceActiveFocus()
+            root.activatePowerAction(modelData.action)
+          }
+
+          Keys.onPressed: function(event) {
+            if (event.key === Qt.Key_Escape) {
+              if (root.powerConfirmationAction.length > 0) root.cancelPowerConfirmationRequested()
+              root.forcePasswordFocus()
+              event.accepted = true
+              return
+            }
+
+            if (!event.isAutoRepeat
+                && (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space)) {
+              powerButton.activate()
+              event.accepted = true
+            }
+          }
 
           Column {
             anchors.centerIn: parent
@@ -355,24 +506,26 @@ Item {
               color: Color.lock.text
               font.family: Style.font.family
               font.pixelSize: Style.font.display
+              Accessible.ignored: true
             }
 
             Text {
               anchors.horizontalCenter: parent.horizontalCenter
-              text: modelData.label
-              color: Color.lock.text
+              text: root.powerActionLabel(modelData.action, modelData.label)
+              color: root.failedPowerAction === modelData.action ? Color.lock.textError : Color.lock.text
               font.family: Style.font.family
               font.pixelSize: Style.font.caption
+              Accessible.ignored: true
             }
           }
 
           MouseArea {
             id: powerMouse
             anchors.fill: parent
-            enabled: root.inputEnabled
+            enabled: powerButton.enabled
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: root.runPowerAction(modelData.action)
+            onClicked: powerButton.activate()
             onPositionChanged: root.wakeRequested()
           }
         }

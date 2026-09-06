@@ -7,6 +7,11 @@ case ":$PATH:" in
 esac
 
 case ":$PATH:" in
+  *":$ANDROID_HOME/emulator:"*) ;;
+  *) PATH="$ANDROID_HOME/emulator:$PATH" ;;
+esac
+
+case ":$PATH:" in
   *":$ANDROID_HOME/cmdline-tools/latest/bin:"*) ;;
   *) PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$PATH" ;;
 esac

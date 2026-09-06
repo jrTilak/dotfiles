@@ -4,4 +4,4 @@
 --
 
 -- jk to exit insert mode
-vim.keymap.set("i", "jk", "<Esc>", { desc = "Exit insert mode", noremap = true, silent = true })
+--vim.keymap.set("i", "jk", "<Esc>", { desc = "Exit insert mode", noremap = true, silent = true })

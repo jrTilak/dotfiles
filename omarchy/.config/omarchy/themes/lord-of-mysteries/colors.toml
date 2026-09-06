@@ -1,0 +1,37 @@
+mode = "dark"
+
+# Luminous occult accents over a charcoal-indigo fog base.
+accent = "#E0B66D"
+selection = "#4D445E"
+selection_foreground = "#F1ECDF"
+selection_background = "#4D445E"
+muted = "#858A9E"
+
+background = "#202229"
+dark_background = "#181A20"
+darker_background = "#111319"
+lighter_background = "#2F323B"
+
+foreground = "#DADAE7"
+dark_foreground = "#9297AA"
+light_foreground = "#C3C7D6"
+bright_foreground = "#F1ECDF"
+
+red = "#E06C88"
+yellow = "#E5BF78"
+orange = "#E38B6D"
+green = "#8CCB96"
+cyan = "#70C6C0"
+blue = "#7AAEE8"
+magenta = "#B58AD2"
+brown = "#B98A70"
+
+bright_red = "#F0839D"
+bright_yellow = "#F3D18F"
+bright_green = "#A5D9A9"
+bright_cyan = "#89D9D0"
+bright_blue = "#95C3F2"
+bright_magenta = "#CAA3DE"
+
+hyprland_active_border = "#E0B66D #B58AD2 45deg"
+hyprland_inactive_border = "#4D445E"

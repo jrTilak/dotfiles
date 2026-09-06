@@ -23,6 +23,7 @@ source "$OMARCHY_PATH/default/bash/rc"
 source ~/.config/bash/aliases.sh
 source ~/.config/bash/env.sh
 source ~/.config/bash/fns.sh
+source ~/.config/bash/glow-ac.sh
 
 # Attach ble.sh at the VERY BOTTOM of .bashrc
 [[ ${BLE_VERSION-} ]] && ble-attach

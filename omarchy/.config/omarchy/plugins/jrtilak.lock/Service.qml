@@ -33,9 +33,102 @@ Item {
   property string lastEventAt: ""
   property bool strandedLock: false
   property bool strandedLockResolved: false
+  property bool canSuspend: false
+  property bool canHibernate: false
+  property bool canPowerOff: false
+  property string powerConfirmationAction: ""
+  property double powerConfirmationArmedAt: 0
+  property string pendingPowerAction: ""
+  property string failedPowerAction: ""
 
   readonly property bool locked: lockRequested || sessionLock.locked || sessionLock.secure
   readonly property bool authenticating: authenticatingPassword || fingerprintAuthenticating
+  readonly property bool powerActionsEnabled: lockRequested
+    && sessionLock.secure
+    && !authenticatingPassword
+    && pendingPowerAction.length === 0
+
+  function loginCapabilityCommand(method) {
+    return [
+      "busctl", "call",
+      "org.freedesktop.login1",
+      "/org/freedesktop/login1",
+      "org.freedesktop.login1.Manager",
+      method
+    ]
+  }
+
+  function loginCapabilityAvailable(raw) {
+    var match = String(raw || "").match(/^s\s+"([^"]+)"\s*$/)
+    return match !== null && match[1] === "yes"
+  }
+
+  function refreshPowerCapabilities() {
+    if (!canSuspendProcess.running) canSuspendProcess.running = true
+    if (!canHibernateProcess.running) canHibernateProcess.running = true
+    if (!canPowerOffProcess.running) canPowerOffProcess.running = true
+  }
+
+  function powerActionAvailable(action) {
+    if (action === "suspend") return canSuspend
+    if (action === "hibernate") return canHibernate
+    if (action === "poweroff") return canPowerOff
+    return false
+  }
+
+  function cancelPowerConfirmation() {
+    powerConfirmationTimer.stop()
+    powerConfirmationAction = ""
+    powerConfirmationArmedAt = 0
+  }
+
+  function clearPowerFeedback() {
+    powerFailureTimer.stop()
+    failedPowerAction = ""
+  }
+
+  function resetPowerInteractionState() {
+    cancelPowerConfirmation()
+    clearPowerFeedback()
+  }
+
+  function requestPowerAction(action) {
+    if (!powerActionsEnabled || !powerActionAvailable(action)) return
+
+    if (action === "poweroff") {
+      if (powerConfirmationAction !== action) {
+        powerConfirmationAction = action
+        powerConfirmationArmedAt = Date.now()
+        powerConfirmationTimer.restart()
+        return
+      }
+
+      // A normal double-click must not satisfy the confirmation step.
+      if (Date.now() - powerConfirmationArmedAt < 500) return
+    }
+
+    cancelPowerConfirmation()
+    clearPowerFeedback()
+    enteredPassword = ""
+    pendingPassword = ""
+    failureMessage = ""
+
+    // Set pending before aborting fingerprint PAM. Its completion/error
+    // callbacks may already be queued and must not unlock or restart auth.
+    pendingPowerAction = action
+    fingerprintRetryTimer.stop()
+    if (fingerprintPam.active) fingerprintPam.abort()
+    fingerprintAuthenticating = false
+
+    powerActionProcess.command = [
+      "systemctl",
+      "--no-ask-password",
+      "--check-inhibitors=yes",
+      action
+    ]
+    logEvent("power-action-requested:" + action)
+    powerActionProcess.running = true
+  }
 
   function realScreenCount() {
     var screens = Quickshell.screens || []
@@ -132,6 +225,7 @@ Item {
     }
 
     resetAuthenticationState()
+    resetPowerInteractionState()
     lockRequested = true
     armBlankTimer()
     logEvent("lock-requested")
@@ -140,6 +234,7 @@ Item {
     Qt.callLater(function() {
       root.refreshBackground()
       root.refreshFingerprintStatus()
+      root.refreshPowerCapabilities()
     })
 
     return true
@@ -152,6 +247,7 @@ Item {
     pendingSessionLock = false
     sessionLockStabilizeTimer.stop()
     pendingSessionLockTimer.stop()
+    resetPowerInteractionState()
     resetAuthenticationState()
     idleBlankTimer.stop()
     sessionLock.locked = false
@@ -175,7 +271,7 @@ Item {
 
   function submitPassword(value) {
     var password = String(value || "")
-    if (!lockRequested || authenticatingPassword || password.length === 0) return
+    if (!lockRequested || authenticatingPassword || pendingPowerAction.length > 0 || password.length === 0) return
 
     runWake()
     pendingPassword = password
@@ -207,7 +303,7 @@ Item {
   }
 
   function startFingerprint() {
-    if (!lockRequested || !sessionLock.secure || !fingerprintConfigured) return
+    if (!lockRequested || !sessionLock.secure || !fingerprintConfigured || pendingPowerAction.length > 0) return
     if (fingerprintPam.active || fingerprintAuthenticating) return
 
     fingerprintAuthenticating = true
@@ -219,7 +315,7 @@ Item {
   function handleFingerprintFinished(result) {
     fingerprintAuthenticating = false
 
-    if (!lockRequested) return
+    if (!lockRequested || pendingPowerAction.length > 0) return
     if (result === PamResult.Success) {
       finishUnlock()
     } else if (fingerprintConfigured) {
@@ -274,13 +370,22 @@ Item {
         authenticatingPassword: root.authenticatingPassword
         failureMessage: root.failureMessage
         failedAttempts: root.failedAttempts
-        inputEnabled: root.lockRequested
+        inputEnabled: root.lockRequested && root.pendingPowerAction.length === 0
         loadBackground: root.locked
         passwordText: root.enteredPassword
+        powerActionsEnabled: root.powerActionsEnabled
+        canSuspend: root.canSuspend
+        canHibernate: root.canHibernate
+        canPowerOff: root.canPowerOff
+        powerConfirmationAction: root.powerConfirmationAction
+        pendingPowerAction: root.pendingPowerAction
+        failedPowerAction: root.failedPowerAction
         onPasswordTextEdited: function(password) { root.enteredPassword = password }
         onSubmitPassword: function(password) { root.submitPassword(password) }
         onClearFailureRequested: root.failureMessage = ""
         onWakeRequested: root.runWake()
+        onPowerActionRequested: function(action) { root.requestPowerAction(action) }
+        onCancelPowerConfirmationRequested: root.cancelPowerConfirmation()
       }
 
     }
@@ -307,6 +412,13 @@ Item {
       inputEnabled: false
       loadBackground: root.previewVisible
       passwordText: ""
+      powerActionsEnabled: false
+      canSuspend: root.canSuspend
+      canHibernate: root.canHibernate
+      canPowerOff: root.canPowerOff
+      powerConfirmationAction: ""
+      pendingPowerAction: ""
+      failedPowerAction: ""
     }
 
     MouseArea {
@@ -349,7 +461,7 @@ Item {
 
     onError: function(error) {
       root.fingerprintAuthenticating = false
-      if (root.lockRequested && root.fingerprintConfigured) fingerprintRetryTimer.restart()
+      if (root.lockRequested && root.fingerprintConfigured && root.pendingPowerAction.length === 0) fingerprintRetryTimer.restart()
     }
   }
 
@@ -383,6 +495,54 @@ Item {
       root.fingerprintConfigured = String(fingerprintCheckStdout.text || "").trim() === "yes"
       if (root.lockRequested && root.fingerprintConfigured) root.startFingerprint()
       else if (!root.fingerprintConfigured && fingerprintPam.active) fingerprintPam.abort()
+    }
+  }
+
+  Process {
+    id: canSuspendProcess
+    command: root.loginCapabilityCommand("CanSuspend")
+    stdout: StdioCollector { id: canSuspendStdout; waitForEnd: true }
+    onExited: function(exitCode) {
+      root.canSuspend = exitCode === 0 && root.loginCapabilityAvailable(canSuspendStdout.text)
+    }
+  }
+
+  Process {
+    id: canHibernateProcess
+    command: root.loginCapabilityCommand("CanHibernate")
+    stdout: StdioCollector { id: canHibernateStdout; waitForEnd: true }
+    onExited: function(exitCode) {
+      root.canHibernate = exitCode === 0 && root.loginCapabilityAvailable(canHibernateStdout.text)
+    }
+  }
+
+  Process {
+    id: canPowerOffProcess
+    command: root.loginCapabilityCommand("CanPowerOff")
+    stdout: StdioCollector { id: canPowerOffStdout; waitForEnd: true }
+    onExited: function(exitCode) {
+      root.canPowerOff = exitCode === 0 && root.loginCapabilityAvailable(canPowerOffStdout.text)
+    }
+  }
+
+  Process {
+    id: powerActionProcess
+    onExited: function(exitCode) {
+      var action = root.pendingPowerAction
+      root.pendingPowerAction = ""
+
+      if (exitCode !== 0) {
+        root.failedPowerAction = action
+        powerFailureTimer.restart()
+        root.logEvent("power-action-failed:" + action + ":" + exitCode)
+      } else {
+        root.logEvent("power-action-finished:" + action)
+      }
+
+      if (root.lockRequested && sessionLock.secure) {
+        root.runWake()
+        root.startFingerprint()
+      }
     }
   }
 
@@ -432,6 +592,20 @@ Item {
   }
 
   Timer {
+    id: powerConfirmationTimer
+    interval: 4000
+    repeat: false
+    onTriggered: root.cancelPowerConfirmation()
+  }
+
+  Timer {
+    id: powerFailureTimer
+    interval: 4000
+    repeat: false
+    onTriggered: root.failedPowerAction = ""
+  }
+
+  Timer {
     id: sessionLockStabilizeTimer
     interval: 500
     repeat: false
@@ -477,7 +651,10 @@ Item {
 
   onAuthenticatingPasswordChanged: {
     if (!lockRequested) return
-    if (authenticatingPassword) idleBlankTimer.stop()
+    if (authenticatingPassword) {
+      cancelPowerConfirmation()
+      idleBlankTimer.stop()
+    }
     else armBlankTimer()
   }
 
@@ -504,6 +681,7 @@ Item {
   Component.onCompleted: {
     refreshBackground()
     refreshFingerprintStatus()
+    refreshPowerCapabilities()
     checkStrandedLock()
   }
 
@@ -531,6 +709,10 @@ Item {
         passwordPam: root.passwordPamConfigured,
         fingerprint: root.fingerprintConfigured,
         authenticating: root.authenticating,
+        canSuspend: root.canSuspend,
+        canHibernate: root.canHibernate,
+        canPowerOff: root.canPowerOff,
+        pendingPowerAction: root.pendingPowerAction,
         lastEvent: root.lastEvent,
         lastEventAt: root.lastEventAt
       })

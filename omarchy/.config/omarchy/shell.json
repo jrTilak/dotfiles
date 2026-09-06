@@ -54,7 +54,8 @@
           ]
         },
         {
-          "id": "jankeesvw.notification-center"
+          "id": "jrtilak.notification-center",
+          "panelWidth": 480
         },
         {
           "id": "omarchy.agents"
@@ -70,9 +71,6 @@
         },
         {
           "id": "omarchy.power"
-        },
-        {
-          "id": "agx.screen-time"
         }
       ]
     },

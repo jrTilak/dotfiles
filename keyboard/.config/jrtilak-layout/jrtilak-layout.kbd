@@ -69,4 +69,3 @@
   lctl lmet lalt (multi spc (layer-switch numeric)) ralt rmet rctl
   (multi esc (layer-switch numeric)) (multi f1 (layer-switch numeric)) (multi f2 (layer-switch numeric)) (multi f3 (layer-switch numeric)) (multi f4 (layer-switch numeric)) (multi f5 (layer-switch numeric)) (multi f6 (layer-switch numeric)) (multi f7 (layer-switch numeric)) (multi f8 (layer-switch numeric)) (multi f9 (layer-switch numeric)) (multi f10 (layer-switch numeric)) (multi f11 (layer-switch numeric)) (multi f12 (layer-switch numeric)) (multi ins (layer-switch numeric)) (multi del (layer-switch numeric)) (multi home (layer-switch numeric)) (multi end (layer-switch numeric)) (multi pgup (layer-switch numeric)) (multi pgdn (layer-switch numeric)) (multi left (layer-switch numeric)) (multi down (layer-switch numeric)) (multi up (layer-switch numeric)) (multi rght (layer-switch numeric))
 )
-

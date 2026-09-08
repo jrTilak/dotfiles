@@ -1,0 +1,13 @@
+[Unit]
+Description=jrtilak-layout keyboard layers
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+# The wrapper reads flags.env and exits successfully when the layout is disabled.
+ExecStart=%h/.local/bin/jrtilak-layout run
+# An emergency exit must leave the normal keyboard available; do not auto-restart.
+Restart=no
+
+[Install]
+WantedBy=graphical-session.target

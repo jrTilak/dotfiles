@@ -1,2 +1,0 @@
-# Run the installer from the repository; do not link it into the home directory.
-^/install\.sh$

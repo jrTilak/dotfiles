@@ -1,4 +1,0 @@
-# Grant the active local desktop user access to keyboard devices, for Kanata.
-# A separate named rule: no Omarchy or distribution rule is overwritten.
-SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_INPUT_KEYBOARD}=="1", TAG+="uaccess"
-SUBSYSTEM=="misc", KERNEL=="uinput", TAG+="uaccess"

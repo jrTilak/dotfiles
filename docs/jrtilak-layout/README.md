@@ -67,6 +67,10 @@ Physical:  U I O P
 Output:    ← ↓ ↑ →
 ```
 
+The physical top-row 1–0 keys work in every layer and always output digits,
+even with Shift held. In Symbols, using a top-row digit also consumes the
+one-shot layer and returns to the previous layer.
+
 Other letter positions are disabled in Numbers. Digits stay digits with Shift
 held. Comma, period and slash remain available. For example: Caps twice, A S D
 types `123`; Caps, V inserts `+` and returns to Numbers; F types `4`.
@@ -79,11 +83,10 @@ Caps taps and leaves Alt available for application shortcuts.
 
 ## Disabled keys while the layout is active
 
-The original typing number row (grave, 1–0, minus, equals, Backspace), original
-far-right Enter, right bracket and backslash are disabled in every layer. Use
-the nearby editing positions and symbol/number layers instead. These physical
-keys also do nothing in shortcuts, so number-row workspace shortcuts must use
-the Numbers layer, for example double Caps then Super+A for Super+1.
+Grave, minus, equals, the original far-right Backspace/Enter, right bracket and
+backslash are disabled in every layer. Use the nearby editing positions and
+symbol layer instead. Top-row 1–0 remain available, including with Ctrl, Alt or
+Super for shortcuts; Shift is suppressed for these digits.
 
 This restriction covers the main typing block. Escape, F1–F12, dedicated
 navigation keys, modifiers, media keys and a separate numpad are retained.

@@ -3,7 +3,8 @@
 ;; Caps once selects one symbol; Caps twice within 320 ms toggles Numbers.
 ;; Symbols-from-ABC and symbols-from-Numbers are two internal states of ONE
 ;; logical Symbols layer. Each non-modifier output restores its remembered base.
-;; The original number row, far Backspace/Enter, ] and backslash are disabled.
+;; Top-row 1–0 always output digits, even with Shift, in every layer.
+;; Grave, minus, equals, far Backspace/Enter, ] and backslash are disabled.
 ;; Escape, function/navigation/media keys and modifiers remain usable.
 ;; No one-shot timeout: a symbol waits until a key is used.
 ;; Ctrl+Space+Escape (physical keys) exits Kanata immediately.
@@ -35,7 +36,7 @@
 )
 
 (deflayer abc
-  XX XX XX XX XX XX XX XX XX XX XX XX XX XX
+  XX (unshift 1) (unshift 2) (unshift 3) (unshift 4) (unshift 5) (unshift 6) (unshift 7) (unshift 8) (unshift 9) (unshift 0) XX XX XX
   tab q w e r t y u i o p bspc XX XX
   @caps-abc a s d f g h j k l ; ret XX
   lsft z x c v b n m , . / rsft
@@ -44,7 +45,7 @@
 )
 
 (deflayer numeric
-  XX XX XX XX XX XX XX XX XX XX XX XX XX XX
+  XX (unshift 1) (unshift 2) (unshift 3) (unshift 4) (unshift 5) (unshift 6) (unshift 7) (unshift 8) (unshift 9) (unshift 0) XX XX XX
   tab XX XX XX XX XX XX left down up rght bspc XX XX
   @caps-num (unshift 1) (unshift 2) (unshift 3) (unshift 4) (unshift 5) (unshift 6) (unshift 7) (unshift 8) (unshift 9) (unshift 0) ret XX
   lsft XX XX XX XX XX XX XX , . / rsft
@@ -53,7 +54,7 @@
 )
 
 (deflayer symbols-abc
-  XX XX XX XX XX XX XX XX XX XX XX XX XX XX
+  XX (multi (unshift 1) (layer-switch abc)) (multi (unshift 2) (layer-switch abc)) (multi (unshift 3) (layer-switch abc)) (multi (unshift 4) (layer-switch abc)) (multi (unshift 5) (layer-switch abc)) (multi (unshift 6) (layer-switch abc)) (multi (unshift 7) (layer-switch abc)) (multi (unshift 8) (layer-switch abc)) (multi (unshift 9) (layer-switch abc)) (multi (unshift 0) (layer-switch abc)) XX XX XX
   (multi tab (layer-switch abc)) (multi (unshift grv) (layer-switch abc)) (multi (unshift lsft grv) (layer-switch abc)) (multi (unshift lsft 3) (layer-switch abc)) (multi (unshift lsft 7) (layer-switch abc)) (multi (unshift lsft \) (layer-switch abc)) (multi (unshift lsft 6) (layer-switch abc)) (multi (unshift lsft [) (layer-switch abc)) (multi (unshift lsft ]) (layer-switch abc)) (multi (unshift [) (layer-switch abc)) (multi (unshift ]) (layer-switch abc)) (multi bspc (layer-switch abc)) XX XX
   @caps-sym-abc (multi (unshift lsft 1) (layer-switch abc)) (multi (unshift lsft -) (layer-switch abc)) (multi (unshift lsft ;) (layer-switch abc)) (multi (unshift =) (layer-switch abc)) (multi (unshift lsft 4) (layer-switch abc)) (multi (unshift lsft 2) (layer-switch abc)) (multi (unshift lsft 9) (layer-switch abc)) (multi (unshift lsft 0) (layer-switch abc)) (multi @quote (layer-switch abc)) (multi ; (layer-switch abc)) (multi ret (layer-switch abc)) XX
   lsft (multi (unshift lsft 5) (layer-switch abc)) (multi (unshift lsft /) (layer-switch abc)) (multi (unshift lsft 8) (layer-switch abc)) (multi (unshift lsft =) (layer-switch abc)) (multi (unshift \) (layer-switch abc)) (multi (unshift /) (layer-switch abc)) (multi (unshift -) (layer-switch abc)) (multi , (layer-switch abc)) (multi . (layer-switch abc)) (multi / (layer-switch abc)) rsft
@@ -62,7 +63,7 @@
 )
 
 (deflayer symbols-num
-  XX XX XX XX XX XX XX XX XX XX XX XX XX XX
+  XX (multi (unshift 1) (layer-switch numeric)) (multi (unshift 2) (layer-switch numeric)) (multi (unshift 3) (layer-switch numeric)) (multi (unshift 4) (layer-switch numeric)) (multi (unshift 5) (layer-switch numeric)) (multi (unshift 6) (layer-switch numeric)) (multi (unshift 7) (layer-switch numeric)) (multi (unshift 8) (layer-switch numeric)) (multi (unshift 9) (layer-switch numeric)) (multi (unshift 0) (layer-switch numeric)) XX XX XX
   (multi tab (layer-switch numeric)) (multi (unshift grv) (layer-switch numeric)) (multi (unshift lsft grv) (layer-switch numeric)) (multi (unshift lsft 3) (layer-switch numeric)) (multi (unshift lsft 7) (layer-switch numeric)) (multi (unshift lsft \) (layer-switch numeric)) (multi (unshift lsft 6) (layer-switch numeric)) (multi (unshift lsft [) (layer-switch numeric)) (multi (unshift lsft ]) (layer-switch numeric)) (multi (unshift [) (layer-switch numeric)) (multi (unshift ]) (layer-switch numeric)) (multi bspc (layer-switch numeric)) XX XX
   @caps-sym-num (multi (unshift lsft 1) (layer-switch numeric)) (multi (unshift lsft -) (layer-switch numeric)) (multi (unshift lsft ;) (layer-switch numeric)) (multi (unshift =) (layer-switch numeric)) (multi (unshift lsft 4) (layer-switch numeric)) (multi (unshift lsft 2) (layer-switch numeric)) (multi (unshift lsft 9) (layer-switch numeric)) (multi (unshift lsft 0) (layer-switch numeric)) (multi @quote (layer-switch numeric)) (multi ; (layer-switch numeric)) (multi ret (layer-switch numeric)) XX
   lsft (multi (unshift lsft 5) (layer-switch numeric)) (multi (unshift lsft /) (layer-switch numeric)) (multi (unshift lsft 8) (layer-switch numeric)) (multi (unshift lsft =) (layer-switch numeric)) (multi (unshift \) (layer-switch numeric)) (multi (unshift /) (layer-switch numeric)) (multi (unshift -) (layer-switch numeric)) (multi , (layer-switch numeric)) (multi . (layer-switch numeric)) (multi / (layer-switch numeric)) rsft
